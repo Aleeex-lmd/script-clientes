@@ -6,7 +6,7 @@ git clone https://github.com/snort3/libdaq.git
 cd libdaq
 ./bootstrap
 ./configure
-make install
+sudo make install
 
 sudo ldconfig
 
@@ -18,4 +18,4 @@ cd snort3
 cd build
 
 make -j $(nproc)
-make instal
+sudo make instal
