@@ -73,10 +73,10 @@ echo "La máquina ${NOMBRE_MAQUINA} ha sido creada y está en funcionamiento."
 
 # Espera a que la máquina esté en estado "running"
 echo "Esperando a que la máquina ${NOMBRE_MAQUINA} esté en funcionamiento..."
-sleep 15
+sleep 13
 
 # Obtener la dirección IP de la máquina virtual
-IP=$(virsh domifaddr "${NOMBRE_MAQUINA}" | grep -oP '(\d{1,3}\.){3}\d{1,3}')
+IP=$(sudo virsh domifaddr --source agent prueba-snort enp1s0 | awk 'NR>2 {print $4}' | cut -d'/' -f1 | grep -v '::')
 
 if [ -n "$IP" ]; then
     echo "La máquina ${NOMBRE_MAQUINA} está en funcionamiento y tiene la IP: ${IP}"
@@ -84,4 +84,7 @@ else
     echo "No se pudo obtener la IP de la máquina ${NOMBRE_MAQUINA}. Verifica que la máquina esté conectada a la red correctamente."
 fi
 
+git clone https://github.com/Aleeex-lmd/scrip-clientes.git
+cd script-clientes
+scp instala_snort.sh debian@"$IP":/home/debian
 ssh debian@"$IP"
