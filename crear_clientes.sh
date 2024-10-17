@@ -12,7 +12,7 @@ TAMANO_VOLUMEN=$2
 NOMBRE_RED=$3
 
 # Variables
-TEMPLATE="plantilla-comprimida.qcow2"
+TEMPLATE="plantilla-cliente.qcow2"
 VOLUMEN="${NOMBRE_MAQUINA}.qcow2"
 RUTA_IMAGEN="/var/lib/libvirt/images/${VOLUMEN}"
 USUARIO="debian"  # Usuario para acceso SSH
@@ -49,14 +49,14 @@ echo "Personalizando la máquina virtual..."
 sudo virt-customize -a "${RUTA_IMAGEN}" \
     --hostname "${NOMBRE_MAQUINA}" \
     --run-command "if [ ! -d '/home/${USUARIO}/.ssh' ]; then mkdir -p '/home/${USUARIO}/.ssh'; fi" \
-    --run-command "ssh-keygen -t rsa -b 2048 -f '/home/${USUARIO}/.ssh/id_rsa' -N ''" \
     --run-command "echo '${CLAVE_PUBLICA_CONTENIDO}' >> /home/${USUARIO}/.ssh/authorized_keys" \
-
+    --run-command "ssh-keygen -t rsa -b 2048 -f '/home/${USUARIO}/.ssh/id_rsa' -N ''" \
 
 
 # Conecta la máquina a la red especificada
 echo "Conectando la máquina ${NOMBRE_MAQUINA} a la red ${NOMBRE_RED}..."
-virsh attach-interface "${NOMBRE_MAQUINA}" --type bridge --source "${NOMBRE_RED}" --model virtio --persistent
+virsh attach-interface "${NOMBRE_MAQUINA}" --type network --source "${NOMBRE_RED}" --model virtio --persistent
+
 
 # Inicia la máquina virtual
 echo "Iniciando la máquina virtual ${NOMBRE_MAQUINA}..."
@@ -64,14 +64,21 @@ virsh start "${NOMBRE_MAQUINA}"
 
 echo "La máquina ${NOMBRE_MAQUINA} ha sido creada y está en funcionamiento."
 
-# Espera unos segundos para que la máquina pueda obtener una dirección IP
+# Espera a que la máquina esté en estado "running"
+echo "Esperando a que la máquina ${NOMBRE_MAQUINA} esté en funcionamiento..."
 sleep 15
+
+
 
 # Obtener la dirección IP de la máquina virtual
 IP=$(virsh domifaddr "${NOMBRE_MAQUINA}" | grep -oP '(\d{1,3}\.){3}\d{1,3}')
+
 
 if [ -n "$IP" ]; then
     echo "La máquina ${NOMBRE_MAQUINA} está en funcionamiento y tiene la IP: ${IP}"
 else
     echo "No se pudo obtener la IP de la máquina ${NOMBRE_MAQUINA}. Verifica que la máquina esté conectada a la red correctamente."
 fi
+
+ssh debian@"$IP"
+
