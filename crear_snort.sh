@@ -68,7 +68,6 @@ echo "Esperando a que la máquina ${NOMBRE_MAQUINA} esté en funcionamiento..."
 sleep 15
 
 # Obtener la dirección IP de la máquina virtual
-# Obtener la dirección IP de la máquina virtual
 IP=$(virsh domifaddr "${NOMBRE_MAQUINA}" | grep -oP '(\d{1,3}\.){3}\d{1,3}')
 
 
