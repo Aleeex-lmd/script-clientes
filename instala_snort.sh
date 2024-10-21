@@ -5,7 +5,7 @@ git clone https://github.com/snort3/libdaq.git
 
 cd libdaq
 ./bootstrap
-./configure --prefix=/usr/local/lib/daq_s3
+./configure
 sudo make install
 
 sudo ldconfig
@@ -14,11 +14,10 @@ git clone https://github.com/snort3/snort3.git
 
 
 cd snort3
-./configure_cmake.sh --with-daq-includes=/usr/local/lib/daq_s3/include/ \
-                       --with-daq-libraries=/usr/local/lib/daq_s3/lib/
+./configure_cmake.sh
 
 cd build
 make -j $(nproc)
 sudo make install
 
-alias snort='/usr/local/snort/bin/snort --daq-dir /usr/local/lib/daq_s3/lib/daq'
+
