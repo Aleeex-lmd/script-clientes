@@ -16,12 +16,6 @@ TEMPLATE="plantilla-cliente.qcow2"
 VOLUMEN="${NOMBRE_MAQUINA}.qcow2"
 RUTA_IMAGEN="/var/lib/libvirt/images/${VOLUMEN}"
 USUARIO="debian"  # Usuario para acceso SSH
-USUARIO_LOCAL="alex"  # Usuario local
-SSH_DIR="/home/${USUARIO}/.ssh"
-SSH_KEY="${SSH_DIR}/id_rsa"
-CLAVE_PUBLICA="/home/alex/.ssh/id_rsa.pub"
-CLAVE_PUBLICA_CONTENIDO=$(cat "${CLAVE_PUBLICA}")
-
 
 # Verificar si el volumen ya existe
 if virsh vol-list default | grep -q "${VOLUMEN}"; then
@@ -31,11 +25,11 @@ fi
 
 # Crea el volumen a partir de la plantilla
 echo "Creando volumen ${VOLUMEN} de tamaño ${TAMANO_VOLUMEN}..."
-virsh vol-create-as default "${VOLUMEN}" "${TAMANO_VOLUMEN}" --format qcow2 --backing-vol "${TEMPLATE}" --backing-vol-format qcow2
+sudo virsh vol-create-as default "${VOLUMEN}" "${TAMANO_VOLUMEN}" --format qcow2 --backing-vol "${TEMPLATE}" --backing-vol-format qcow2
 
 # Crea la máquina virtual a partir del nuevo volumen
 echo "Creando la máquina virtual ${NOMBRE_MAQUINA}..."
-virt-clone --connect=qemu:///system --original plantilla-cliente --name "${NOMBRE_MAQUINA}" --file "${RUTA_IMAGEN}" --preserve-data
+sudo virt-clone --connect=qemu:///system --original plantilla-cliente --name "${NOMBRE_MAQUINA}" --file "${RUTA_IMAGEN}" --preserve-data
 
 # Redimensionar el sistema de archivos
 echo "Redimensionando el sistema de archivos del volumen..."
@@ -47,19 +41,16 @@ sudo mv "${TEMP_FILE}" "${RUTA_IMAGEN}"
 # Personaliza la máquina virtual
 echo "Personalizando la máquina virtual..."
 sudo virt-customize -a "${RUTA_IMAGEN}" \
-    --hostname "${NOMBRE_MAQUINA}" \
-    --run-command "if [ ! -d '/home/${USUARIO}/.ssh' ]; then mkdir -p '/home/${USUARIO}/.ssh'; fi" \
-    --run-command "echo '${CLAVE_PUBLICA_CONTENIDO}' >> /home/${USUARIO}/.ssh/authorized_keys" \
-    --run-command "ssh-keygen -t rsa -b 2048 -f '/home/${USUARIO}/.ssh/id_rsa' -N ''" \
+    --hostname "${NOMBRE_MAQUINA}"
 
 
 # Conecta la máquina a la red especificada
 echo "Conectando la máquina ${NOMBRE_MAQUINA} a la red ${NOMBRE_RED}..."
-virsh attach-interface "${NOMBRE_MAQUINA}" --type network --source "${NOMBRE_RED}" --model virtio --persistent
+sudo virsh attach-interface "${NOMBRE_MAQUINA}" --type network --source "${NOMBRE_RED}" --model virtio --persistent
 
 
 # Inicia la máquina virtual
-echo "Iniciando la máquina virtual ${NOMBRE_MAQUINA}..."
+sudo echo "Iniciando la máquina virtual ${NOMBRE_MAQUINA}..."
 virsh start "${NOMBRE_MAQUINA}"
 
 echo "La máquina ${NOMBRE_MAQUINA} ha sido creada y está en funcionamiento."

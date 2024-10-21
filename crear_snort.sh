@@ -18,11 +18,6 @@ TEMPLATE="plantilla-cliente.qcow2"
 VOLUMEN="${NOMBRE_MAQUINA}.qcow2"
 RUTA_IMAGEN="/var/lib/libvirt/images/${VOLUMEN}"
 USUARIO="debian"  # Usuario para acceso SSH
-USUARIO_LOCAL="alex"  # Usuario local
-SSH_DIR="/home/${USUARIO}/.ssh"
-SSH_KEY="${SSH_DIR}/id_rsa"
-CLAVE_PUBLICA="/home/alex/.ssh/id_rsa.pub"
-CLAVE_PUBLICA_CONTENIDO=$(cat "${CLAVE_PUBLICA}")
 
 # Verificar si el volumen ya existe
 if virsh vol-list default | grep -q "${VOLUMEN}"; then
@@ -48,11 +43,7 @@ sudo mv "${TEMP_FILE}" "${RUTA_IMAGEN}"
 # Personaliza la máquina virtual
 echo "Personalizando la máquina virtual..."
 sudo virt-customize -a "${RUTA_IMAGEN}" \
-    --hostname "${NOMBRE_MAQUINA}" \
-    --run-command "if [ ! -d '/home/${USUARIO}/.ssh' ]; then mkdir -p '/home/${USUARIO}/.ssh'; fi" \
-    --run-command "echo '${CLAVE_PUBLICA_CONTENIDO}' >> /home/${USUARIO}/.ssh/authorized_keys" \
-    --run-command "ssh-keygen -t rsa -b 2048 -f '/home/${USUARIO}/.ssh/id_rsa' -N ''" \
-
+    --hostname "${NOMBRE_MAQUINA}" 
 # Conecta la máquina a la red especificada
 if [ "$TIPO_RED" == "puente" ]; then
     echo "Conectando la máquina ${NOMBRE_MAQUINA} a la red de puente ${NOMBRE_RED}..."
