@@ -44,6 +44,7 @@ sudo mv "${TEMP_FILE}" "${RUTA_IMAGEN}"
 echo "Personalizando la máquina virtual..."
 sudo virt-customize -a "${RUTA_IMAGEN}" \
     --hostname "${NOMBRE_MAQUINA}" 
+
 # Conecta la máquina a la red especificada
 if [ "$TIPO_RED" == "puente" ]; then
     echo "Conectando la máquina ${NOMBRE_MAQUINA} a la red de puente ${NOMBRE_RED}..."
@@ -64,10 +65,12 @@ echo "La máquina ${NOMBRE_MAQUINA} ha sido creada y está en funcionamiento."
 
 # Espera a que la máquina esté en estado "running"
 echo "Esperando a que la máquina ${NOMBRE_MAQUINA} esté en funcionamiento..."
-sleep 13
+sleep 15
 
 # Obtener la dirección IP de la máquina virtual
-IP=$(sudo virsh domifaddr --source agent prueba-snort enp1s0 | awk 'NR>2 {print $4}' | cut -d'/' -f1 | grep -v '::')
+# Obtener la dirección IP de la máquina virtual
+IP=$(virsh domifaddr "${NOMBRE_MAQUINA}" | grep -oP '(\d{1,3}\.){3}\d{1,3}')
+
 
 if [ -n "$IP" ]; then
     echo "La máquina ${NOMBRE_MAQUINA} está en funcionamiento y tiene la IP: ${IP}"
