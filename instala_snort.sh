@@ -21,4 +21,4 @@ cd build
 make -j $(nproc)
 sudo make install
 
-
+alias snort='/usr/local/snort/bin/snort 
