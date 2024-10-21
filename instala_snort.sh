@@ -10,10 +10,11 @@ sudo make install
 
 sudo ldconfig
 
+cd /home/debian
 git clone https://github.com/snort3/snort3.git
 
 
-cd snort3
+cd snort
 ./configure_cmake.sh
 
 cd build
