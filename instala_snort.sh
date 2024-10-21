@@ -10,15 +10,17 @@ sudo make install
 
 sudo ldconfig
 
-cd /home/debian
 git clone https://github.com/snort3/snort3.git
 
+export my_path=/usr/local/bin
+mkdir -p $my_path
 cd snort3
-./configure_cmake.sh --with-daq-includes=/usr/local/lib/daq_s3/include/ \
+./configure_cmake.sh --prefix=$my_path \
+                       --with-daq-includes=/usr/local/lib/daq_s3/include/ \
                        --with-daq-libraries=/usr/local/lib/daq_s3/lib/
+
 cd build
-
 make -j $(nproc)
-sudo make instal
+sudo make install
 
-alias snort='/usr/local/snort/bin/snort --daq-dir /usr/local/lib/daq_s3/lib/daq'
+alias snort='/usr/local/bin/snort/bin/snort --daq-dir /usr/local/lib/daq_s3/lib/daq'
