@@ -1,4 +1,4 @@
-sudo apt install -y libdaq2 cmake gcc g++ flex bison libpcap-dev libssl-dev libdaq-dev libhwloc-dev libluajit-5.1-dev libjansson-dev libpcre2-dev zlib1g-dev libunwind-dev uuid-dev libpcre3-dev build-essential libnet1-dev -y
+sudo apt install -y libdaq2 cmake gcc g++ flex bison libpcap-dev libssl-dev libdaq-dev libhwloc-dev libluajit-5.1-dev libjansson-dev libpcre2-dev zlib1g-dev libunwind-dev uuid-dev libpcre3-dev build-essential libnet1-dev git -y
 
 
 git clone https://github.com/snort3/libdaq.git
