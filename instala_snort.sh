@@ -5,7 +5,7 @@ git clone https://github.com/snort3/libdaq.git
 
 cd libdaq
 ./bootstrap
-./configure
+./configure --prefix=/usr/local/lib/daq_s3
 sudo make install
 
 sudo ldconfig
