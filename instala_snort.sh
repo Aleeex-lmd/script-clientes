@@ -14,7 +14,7 @@ cd /home/debian
 git clone https://github.com/snort3/snort3.git
 
 
-cd snort
+cd snort3
 ./configure_cmake.sh
 
 cd build
