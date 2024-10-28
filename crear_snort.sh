@@ -77,7 +77,5 @@ else
     echo "No se pudo obtener la IP de la máquina ${NOMBRE_MAQUINA}. Verifica que la máquina esté conectada a la red correctamente."
 fi
 
-git clone https://github.com/Aleeex-lmd/script-clientes.git
-cd script-clientes
 scp instala_snort.sh debian@"$IP":/home/debian
 ssh debian@"$IP"
